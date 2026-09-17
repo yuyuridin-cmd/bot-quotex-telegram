@@ -1,10 +1,11 @@
-import os, threading
+import os
+import threading
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 from telegram import Update, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN") or os.environ.get("TELEGRAM_BOT_TOKEN")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 PORT = int(os.environ.get("PORT", 10000))
 URL = "https://bot-quotex-telegram-yuyu.onrender.com"
 
@@ -20,12 +21,15 @@ def serve(path):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("📊 ABRIR PANEL YUYU", web_app=WebAppInfo(url=URL))]]
-    await update.message.reply_text("🚀 **Quotex Bot Yuyu**\nTrading mode: DEMO\n\nDale al botón:", reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+    await update.message.reply_text("🚀 Bot Yuyu Activo! Dale al boton:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 def run_bot():
-    if not BOT_TOKEN: return
+    if not BOT_TOKEN:
+        print("ERROR: No BOT_TOKEN")
+        return
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
+    print("Bot Yuyu iniciado correctamente")
     app.run_polling()
 
 if __name__ == '__main__':
