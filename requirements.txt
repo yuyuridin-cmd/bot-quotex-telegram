@@ -1,5 +1,7 @@
 Flask==2.3.3
 flask-cors==4.0.0
-websocket-client==1.6.4
 requests==2.31.0
+websocket-client==1.6.4
+aiohttp==3.9.5
+python-socks==2.3.0
 git+https://github.com/cleitonleonel/pyquotex.git
