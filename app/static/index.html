@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
+
+<title>Bot Yuyu</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:#0d0e12;
+color:#f4f4f6;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+.wrap{
+max-width:760px;
+margin:auto;
+padding:22px 24px 50px;
+}
+
+.card{
+background:#1b1c22;
+border:1px solid #30323b;
+border-radius:28px;
+padding:28px;
+margin-bottom:24px;
+box-shadow:0 8px 30px #0003;
+}
+
+h1{
+text-align:center;
+font-size:46px;
+margin:8px 0 2px;
+}
+
+.sub{
+text-align:center;
+color:#777;
+font-size:25px;
+margin-bottom:28px;
+}
+
+.label{
+font-size:24px;
+color:#aaa;
+margin-bottom:12px;
+}
+
+.switch{
+display:flex;
+background:#292a2f;
+border-radius:20px;
+padding:8px;
+margin-bottom:24px;
+}
+
+.switch button{
+flex:1;
+border:0;
+background:transparent;
+color:#bbb;
+padding:18px;
+border-radius:17px;
+font-size:23px;
+font-weight:800;
+}
+
+.switch button.active{
+background:#70f394;
+color:#101216;
+}
+
+input{
+width:100%;
+background:#f8ffb7;
+border:2px solid #555;
+border-radius:20px;
+padding:22px 28px;
+font-size:21px;
+margin-bottom:18px;
+outline:none;
+}
+
+.primary{
+width:100%;
+border:0;
+background:#70f394;
+color:#070a0c;
+font-size:28px;
+font-weight:900;
+padding:23px;
+border-radius:24px;
+}
+
+.status{
+text-align:center;
+color:#ff5a5a;
+font-size:19px;
+margin-top:18px;
+}
+
+.hidden{
+display:none;
+}
+
+.balance{
+font-size:48px;
+font-weight:800;
+margin-top:12px;
+}
+
+.pill{
+float:right;
+background:#2a2d36;
+padding:12px 20px;
+border-radius:22px;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+gap:16px;
+align-items:center;
+}
+
+.green{
+color:#6df58f;
+}
+
+.red{
+color:#ff5656;
+}
+
+.small{
+font-size:18px;
+color:#aaa;
+}
+
+.range{
+width:100%;
+}
+
+.stat{
+font-size:26px;
+}
+
+input[type=range]{
+accent-color:#3d79ff;
+padding:0;
+background:transparent;
+border:0;
+}
+
+@media(max-width:520px){
+
+.wrap{
+padding:16px;
+}
+
+.card{
+padding:22px;
+}
+
+h1{
+font-size:38px;
+}
+
+.sub{
+font-size:20px;
+}
+
+.balance{
+font-size:40px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+<section id="login" class="card">
+
+<div style="font-size:44px;text-align:center">
+🤖
+</div>
+
+<h1>
+Bot Yuyu
+</h1>
+
+<div class="sub">
+Conectar Cuenta Quotex
+</div>
+
+<div class="label">
+TIPO DE CUENTA
+</div>
+
+<div class="switch">
+
+<button
+id="demoBtn"
+class="active"
+onclick="choose('DEMO')"
+>
+DEMO
+</button>
+
+<button
+id="realBtn"
+onclick="choose('REAL')"
+>
+REAL
+</button>
+
+</div>
+
+<input
+id="email"
+type="email"
+placeholder="Correo de Quotex"
+>
+
+<input
+id="password"
+type="password"
+placeholder="Contraseña"
+>
+
+<button
+class="primary"
+onclick="login()"
+>
+▶ INICIAR
+</button>
+
+<div
+id="loginStatus"
+class="status"
+>
+Conector pendiente:
+esta versión no envía credenciales a Quotex.
+</div>
+
+</section>
+
+
+<section id="dashboard" class="hidden">
+
+<div class="card">
+
+<span class="label">
+SALDO DISPONIBLE
+</span>
+
+<span
+id="mode"
+class="pill"
+>
+DEMO
+</span>
+
+<div
+id="balance"
+class="balance"
+>
+$0.00
+</div>
+
+<div class="switch">
+
+<button
+id="dashDemo"
+onclick="setAccount('DEMO')"
+>
+DEMO
+</button>
+
+<button
+id="dashReal"
+onclick="setAccount('REAL')"
+>
+REAL
+</button>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="label">
+ESTADÍSTICAS HOY
+</div>
+
+<div class="row">
+
+<div class="stat">
+Ganadas:
+<b id="wins" class="green">0</b>
+</div>
+
+<div class="stat">
+Perdidas:
+<b id="losses" class="red">0</b>
+</div>
+
+<div class="pill">
+0%
+</div>
+
+</div>
+
+<p class="small">
+Base hoy: $0 |
+Ganancia hoy: $
+<span id="profit">0</span>
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="row">
+
+<div class="label">
+Monto
+</div>
+
+<b id="pct">
+6%
+</b>
+
+</div>
+
+<input
+id="amount"
+class="range"
+type="range"
+min="1"
+max="20"
+value="6"
+oninput="pct.textContent=this.value+'%'"
+>
+
+<div class="row">
+
+<div style="flex:1">
+
+<div class="label">
+Límite Ganancia $
+</div>
+
+<input value="10">
+
+</div>
+
+<div style="flex:1">
+
+<div class="label">
+Límite Pérdida $
+</div>
+
+<input value="10">
+
+</div>
+
+</div>
+
+</div>
+
+
+<button
+id="autoBtn"
+class="primary"
+onclick="toggleAuto()"
+>
+▶ INICIAR AUTOMÁTICO
+</button>
+
+
+<div
+class="card"
+style="margin-top:24px"
+>
+
+<div class="label">
+HISTORIAL HOY
+</div>
+
+<div
+id="history"
+class="small"
+>
+Sin operaciones.
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+let account = "DEMO";
+
+let auto = false;
+
+
+function choose(v){
+
+account = v;
+
+document
+.getElementById("demoBtn")
+.classList.toggle(
+"active",
+v === "DEMO"
+);
+
+document
+.getElementById("realBtn")
+.classList.toggle(
+"active",
+v === "REAL"
+);
+
+}
+
+
+async function login(){
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+const password =
+document
+.getElementById("password")
+.value;
+
+const status =
+document
+.getElementById("loginStatus");
+
+if(!email || !password){
+
+status.textContent =
+"Escribe correo y contraseña.";
+
+return;
+
+}
+
+status.textContent =
+"Conectando interfaz…";
+
+try{
+
+const response =
+await fetch(
+"/api/login",
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:JSON.stringify({
+
+email:email,
+
+password:password,
+
+account_type:account
+
+})
+}
+);
+
+const data =
+await response.json();
+
+if(data.ok){
+
+document
+.getElementById("login")
+.classList.add("hidden");
+
+document
+.getElementById("dashboard")
+.classList.remove("hidden");
+
+setAccount(account);
+
+connectWS();
+
+}
+
+}catch(error){
+
+status.textContent =
+"Error de conexión con el servidor.";
+
+}
+
+}
+
+
+function setAccount(v){
+
+account = v;
+
+document
+.getElementById("mode")
+.textContent = v;
+
+document
+.getElementById("dashDemo")
+.classList.toggle(
+"active",
+v === "DEMO"
+);
+
+document
+.getElementById("dashReal")
+.classList.toggle(
+"active",
+v === "REAL"
+);
+
+}
+
+
+async function toggleAuto(){
+
+auto = !auto;
+
+try{
+
+const response =
+await fetch(
+"/api/auto?enabled="+auto,
+{
+method:"POST"
+}
+);
+
+const data =
+await response.json();
+
+auto = data.auto;
+
+document
+.getElementById("autoBtn")
+.textContent =
+auto
+?
+"■ DETENER AUTOMÁTICO"
+:
+"▶ INICIAR AUTOMÁTICO";
+
+}catch(error){
+
+auto = false;
+
+}
+
+}
+
+
+function connectWS(){
+
+const protocol =
+location.protocol === "https:"
+?
+"wss"
+:
+"ws";
+
+const ws =
+new WebSocket(
+protocol +
+"://" +
+location.host +
+"/ws"
+);
+
+ws.onmessage =
+function(event){
+
+const data =
+JSON.parse(event.data);
+
+document
+.getElementById("balance")
+.textContent =
+"$" +
+Number(data.balance)
+.toLocaleString(
+"en-US",
+{
+minimumFractionDigits:2
+}
+);
+
+document
+.getElementById("wins")
+.textContent =
+data.wins;
+
+document
+.getElementById("losses")
+.textContent =
+data.losses;
+
+document
+.getElementById("profit")
+.textContent =
+Number(data.profit)
+.toFixed(2);
+
+};
+
+ws.onclose =
+function(){
+
+setTimeout(
+connectWS,
+3000
+);
+
+};
+
+}
+
+</script>
+
+</body>
+
+</html>
